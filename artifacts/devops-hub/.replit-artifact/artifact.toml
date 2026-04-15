@@ -19,13 +19,7 @@ run = "pnpm --filter @workspace/devops-hub run dev"
 
 [services.production]
 build = [ "pnpm", "--filter", "@workspace/devops-hub", "run", "build" ]
-publicDir = "artifacts/devops-hub/dist/public"
-serve = "static"
-
-[[services.production.rewrites]]
-from = "/*"
-to = "/index.html"
+run = "pnpm --filter @workspace/devops-hub run start"
 
 [services.env]
 PORT = "18855"
-BASE_PATH = "/"
