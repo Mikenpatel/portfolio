@@ -225,6 +225,8 @@ Only after structure is clear, add colours, spacing, font sizes.
 
 ### The Complete Sidebar Component
 
+The sidebar groups tools into categories. Each category is a `<div>` with a label and a list of links underneath. The `<nav>` uses `space-y-6` to put a gap between each group.
+
 Create a new folder `components/` in your project root, then create `components/Sidebar.tsx`:
 
 ```tsx
@@ -238,23 +240,54 @@ export default function Sidebar() {
         <p className="text-gray-400 text-sm mt-1">Tools Reference</p>
       </div>
 
-      {/* Navigation */}
-      <nav>
-        <p className="text-gray-500 text-xs uppercase tracking-wider mb-2">Tools</p>
-        <ul className="space-y-1">
-          <li>
-            <a href="/" className="block px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white">
-              Home
-            </a>
-          </li>
-          <li>
-            <a href="/tools/artifactory" className="block px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white">
-              Artifactory
-            </a>
-          </li>
-        </ul>
-      </nav>
+      {/* Navigation — space-y-6 puts a gap between each category group */}
+      <nav className="space-y-6">
 
+        {/* Group 1 */}
+        <div>
+          <p className="text-gray-500 text-xs uppercase tracking-wider mb-2">Repository Management</p>
+          <ul className="space-y-1">
+            <li><a href="/tools/artifactory" className="block px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white">Artifactory</a></li>
+            <li><a href="/tools/bitbucket" className="block px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white">Bitbucket</a></li>
+          </ul>
+        </div>
+
+        {/* Group 2 */}
+        <div>
+          <p className="text-gray-500 text-xs uppercase tracking-wider mb-2">CI/CD</p>
+          <ul className="space-y-1">
+            <li><a href="/tools/jenkins" className="block px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white">Jenkins</a></li>
+            <li><a href="/tools/teamcity" className="block px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white">TeamCity</a></li>
+          </ul>
+        </div>
+
+        {/* Group 3 */}
+        <div>
+          <p className="text-gray-500 text-xs uppercase tracking-wider mb-2">Security</p>
+          <ul className="space-y-1">
+            <li><a href="/tools/fortify" className="block px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white">Fortify</a></li>
+            <li><a href="/tools/nexusiq" className="block px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white">NexusIQ</a></li>
+          </ul>
+        </div>
+
+        {/* Group 4 */}
+        <div>
+          <p className="text-gray-500 text-xs uppercase tracking-wider mb-2">Infrastructure</p>
+          <ul className="space-y-1">
+            <li><a href="/tools/devops-gateway" className="block px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white">DevOps Gateway</a></li>
+          </ul>
+        </div>
+
+        {/* Group 5 */}
+        <div>
+          <p className="text-gray-500 text-xs uppercase tracking-wider mb-2">GitOps</p>
+          <ul className="space-y-1">
+            <li><a href="/tools/argocd" className="block px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white">Argo CD</a></li>
+            <li><a href="/tools/argo-workflows" className="block px-3 py-2 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white">Argo Workflows</a></li>
+          </ul>
+        </div>
+
+      </nav>
     </aside>
   );
 }
@@ -339,6 +372,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 | Setup | Created Next.js project, fixed corporate network issues |
 | Cleanup | Removed default Next.js page, cleared globals.css |
 | Dark base | Added dark background and text to `page.tsx` using Tailwind |
-| Sidebar | Created `components/Sidebar.tsx`, added to `app/layout.tsx` |
+| Sidebar | Created `components/Sidebar.tsx` with grouped categories, added to `app/layout.tsx` |
+| **Next** | **Home page — stat cards and tool grid** |
 
 *(This table will be updated as we build each component)*
