@@ -60,6 +60,26 @@ devops-hub/
 └── next.config.ts         ← Next.js settings
 ```
 
+### layout.tsx vs page.tsx — Who Does What
+
+```
+layout.tsx  →  provides the outer frame (sidebar, main wrapper) for EVERY page
+page.tsx    →  provides only the content that goes INSIDE that frame
+```
+
+`layout.tsx` already wraps content in `<main>`. So `page.tsx` should never add another `<main>` — that would nest `<main>` inside `<main>`, which is wrong. A page should have only one `<main>`.
+
+```tsx
+// layout.tsx handles this:
+<body>
+  <Sidebar />
+  <main>{children}</main>   ← the frame
+</body>
+
+// page.tsx just provides this:
+<div>...</div>              ← the content, dropped into {children}
+```
+
 ### The Key Next.js Rules
 
 **1. File = Page**
