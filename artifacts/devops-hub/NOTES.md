@@ -365,6 +365,79 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 ---
 
+---
+
+## CSS Grid
+
+Grid creates multi-column layouts. You define how many columns, and items fill in automatically left to right.
+
+### The two things you always need
+
+**1. A container with `grid`:**
+```tsx
+<div className="grid grid-cols-3">
+```
+Any children inside automatically line up in 3 equal columns.
+
+**2. Children just go inside — no extra work:**
+```tsx
+<div className="grid grid-cols-3">
+  <div>Card 1</div>   {/* column 1 */}
+  <div>Card 2</div>   {/* column 2 */}
+  <div>Card 3</div>   {/* column 3 */}
+  <div>Card 4</div>   {/* wraps to next row automatically */}
+</div>
+```
+
+### Adding gaps between cards
+```tsx
+<div className="grid grid-cols-3 gap-6">
+```
+`gap-6` puts equal spacing between every card, both horizontally and vertically.
+
+### Making it responsive
+```tsx
+<div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+```
+| Prefix | When it applies |
+|---|---|
+| *(none)* | All screen sizes (mobile first) |
+| `md:` | Medium screens and up |
+| `xl:` | Extra-large screens and up |
+
+### Flexbox vs Grid — when to use which
+| Use `flex` when... | Use `grid` when... |
+|---|---|
+| Items sit in a single row or column | Items form rows AND columns |
+| Items can have different sizes | Items should be equal width |
+| Example: sidebar + main content | Example: card layouts |
+
+---
+
+## Building the Home Page
+
+### Structure (always plan before coding)
+
+```
+┌─────────────────────────────────────────┐
+│  Stat Cards (3 across)                  │
+│  ┌─────────┐ ┌─────────┐ ┌─────────┐   │
+│  │ Status  │ │Incidents│ │  RITMs  │   │
+│  └─────────┘ └─────────┘ └─────────┘   │
+├─────────────────────────────────────────┤
+│  Tool Cards Grid (3 columns)            │
+│  ┌───────┐ ┌───────┐ ┌───────┐         │
+│  │Artif. │ │Bitbuc.│ │Jenkin.│         │
+│  └───────┘ └───────┘ └───────┘         │
+└─────────────────────────────────────────┘
+```
+
+- Outer wrapper → `<div>` with vertical spacing
+- Stat cards → `grid grid-cols-3` — 3 equal columns
+- Tool cards → `grid grid-cols-3` — same, below the stat cards
+
+---
+
 ## Build Log
 
 | Step | What was built |
