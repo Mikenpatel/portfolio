@@ -31,6 +31,32 @@ Answers to prompts:
 - App Router → Yes
 - Customize import alias → No
 
+### globals.css — Must Always Have Tailwind Directives
+
+Without these three lines at the top of `app/globals.css`, Tailwind classes do nothing:
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+```
+
+Never remove these lines — they are what load the entire Tailwind system.
+
+### Main Content Area Background
+
+The `<body>` has `bg-gray-900` but the `<main>` element needs its own background too, otherwise white can show through. Always add `bg-gray-900` to `<main>` in `layout.tsx`:
+
+```tsx
+<main className="flex-1 p-8 bg-gray-900">{children}</main>
+```
+
 ### Corporate Network Fixes
 **Google Fonts error** — Replace the contents of `app/layout.tsx` with a version that has no Google Fonts import (see layout.tsx section below).
 
