@@ -31,32 +31,6 @@ Answers to prompts:
 - App Router → Yes
 - Customize import alias → No
 
-### globals.css — Must Always Have Tailwind Directives
-
-Without these three lines at the top of `app/globals.css`, Tailwind classes do nothing:
-
-```css
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-```
-
-Never remove these lines — they are what load the entire Tailwind system.
-
-### Main Content Area Background
-
-The `<body>` has `bg-gray-900` but the `<main>` element needs its own background too, otherwise white can show through. Always add `bg-gray-900` to `<main>` in `layout.tsx`:
-
-```tsx
-<main className="flex-1 p-8 bg-gray-900">{children}</main>
-```
-
 ### Corporate Network Fixes
 **Google Fonts error** — Replace the contents of `app/layout.tsx` with a version that has no Google Fonts import (see layout.tsx section below).
 
@@ -515,9 +489,42 @@ Then in the JSX:
 
 Now if you want a 4th stat card, just add one line to the array — the loop handles the rest.
 
+### Separating Data from Display — `data/tools.ts`
+
+A core principle: keep your data separate from your display code. The page file should only care about how things look — a separate data file holds what the data is.
+
+Create `data/tools.ts` in your project root:
+
+```ts
+export const tools = [
+  { id: "artifactory", name: "Artifactory", category: "Repository Management", description: "Enterprise universal binary repository manager." },
+  { id: "bitbucket", name: "Bitbucket", category: "Repository Management", description: "Git repository hosting and collaboration platform." },
+  { id: "jenkins", name: "Jenkins", category: "CI/CD", description: "Open source automation server for building and deploying." },
+  { id: "teamcity", name: "TeamCity", category: "CI/CD", description: "Powerful CI/CD server by JetBrains." },
+  { id: "fortify", name: "Fortify", category: "Security", description: "Static application security testing platform." },
+  { id: "nexusiq", name: "NexusIQ", category: "Security", description: "Software composition analysis for open source compliance." },
+  { id: "devops-gateway", name: "DevOps Gateway", category: "Infrastructure", description: "Internal API gateway for standardised access." },
+  { id: "argocd", name: "Argo CD", category: "GitOps", description: "Declarative GitOps continuous delivery for Kubernetes." },
+  { id: "argo-workflows", name: "Argo Workflows", category: "GitOps", description: "Kubernetes-native workflow engine." },
+];
+```
+
+Then import it in any page with:
+```tsx
+import { tools } from "@/data/tools";
+```
+
+**Template strings** — embedding variables inside a string:
+```tsx
+href={`/tools/${tool.id}`}
+```
+Backticks (`` ` ``) instead of quotes let you put `${}` placeholders inside. `tool.id` becomes `artifactory`, `bitbucket`, etc. automatically.
+
 ### The Complete Home Page (`app/page.tsx`)
 
 ```tsx
+import { tools } from "@/data/tools";
+
 const stats = [
   { label: "System Status", value: "All Operational" },
   { label: "Active Incidents", value: "13" },
@@ -544,6 +551,17 @@ export default function Home() {
         ))}
       </div>
 
+      {/* Tool cards grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        {tools.map((tool) => (
+          <a key={tool.id} href={`/tools/${tool.id}`} className="block bg-gray-800 border border-gray-700 rounded-xl p-5 hover:border-blue-500 transition-colors">
+            <h3 className="text-white font-semibold text-lg">{tool.name}</h3>
+            <p className="text-gray-400 text-sm mt-1">{tool.category}</p>
+            <p className="text-gray-500 text-sm mt-3">{tool.description}</p>
+          </a>
+        ))}
+      </div>
+
     </div>
   );
 }
@@ -559,6 +577,7 @@ export default function Home() {
 | Cleanup | Removed default Next.js page, cleared globals.css |
 | Dark base | Added dark background and text to `page.tsx` using Tailwind |
 | Sidebar | Created `components/Sidebar.tsx` with grouped categories, added to `app/layout.tsx` |
-| **Next** | **Home page — stat cards and tool grid** |
+| Home page | `app/page.tsx` with stat cards + tool grid using `.map()`, data from `data/tools.ts` |
+| **Next** | **Individual tool page — `app/tools/[toolId]/page.tsx`** |
 
 *(This table will be updated as we build each component)*
