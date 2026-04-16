@@ -456,6 +456,72 @@ Any children inside automatically line up in 3 equal columns.
 - Stat cards → `grid grid-cols-3` — 3 equal columns
 - Tool cards → `grid grid-cols-3` — same, below the stat cards
 
+### Looping with `.map()` — Don't repeat yourself
+
+Instead of copy-pasting the same card 3 times, define the data as an array and loop through it with `.map()`. This is one of the most used patterns in React.
+
+```tsx
+const stats = [
+  { label: "System Status", value: "All Operational" },
+  { label: "Active Incidents", value: "13" },
+  { label: "Open RITMs", value: "156" },
+];
+```
+
+Then in the JSX:
+```tsx
+{stats.map((stat) => (
+  <div key={stat.label} className="...">
+    <p>{stat.label}</p>
+    <p>{stat.value}</p>
+  </div>
+))}
+```
+
+**Key things to know:**
+| Part | What it does |
+|---|---|
+| `stats.map(...)` | Loops through every item in the array |
+| `(stat) =>` | Each item is temporarily called `stat` inside the loop |
+| `{stat.label}` | `{}` means "insert a JavaScript value here" |
+| `key={stat.label}` | React needs a unique key on every looped item to track them — always required |
+
+Now if you want a 4th stat card, just add one line to the array — the loop handles the rest.
+
+### The Complete Home Page (`app/page.tsx`)
+
+```tsx
+const stats = [
+  { label: "System Status", value: "All Operational" },
+  { label: "Active Incidents", value: "13" },
+  { label: "Open RITMs", value: "156" },
+];
+
+export default function Home() {
+  return (
+    <div className="space-y-8">
+
+      {/* Page title */}
+      <div>
+        <h1 className="text-2xl font-bold text-white">Dashboard</h1>
+        <p className="text-gray-400 mt-1">Overview of all DevOps tools</p>
+      </div>
+
+      {/* Stat cards */}
+      <div className="grid grid-cols-3 gap-6">
+        {stats.map((stat) => (
+          <div key={stat.label} className="bg-gray-800 border border-gray-700 rounded-xl p-5">
+            <p className="text-gray-400 text-sm">{stat.label}</p>
+            <p className="text-white text-2xl font-bold mt-1">{stat.value}</p>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  );
+}
+```
+
 ---
 
 ## Build Log
