@@ -277,9 +277,25 @@ export default function Sidebar() {
 | `hover:text-white` | Text turns white on hover |
 | `uppercase tracking-wider` | All caps + spaced letters for the section label |
 
-### Step 4 — Add the Sidebar to the Layout
+### Step 4 — Export the Component
 
-Open `app/layout.tsx` and update it so the sidebar wraps every page:
+For a component to be usable anywhere in the project, it must be exported. Always start your component with `export default`:
+
+```tsx
+export default function Sidebar() {
+  return (
+    <aside>
+      {/* your content */}
+    </aside>
+  );
+}
+```
+
+Without `export default`, the component exists but nothing can use it.
+
+### Step 5 — Add the Sidebar to the Layout
+
+Open `app/layout.tsx` and update it so the sidebar appears on every page:
 
 ```tsx
 import type { Metadata } from "next";
