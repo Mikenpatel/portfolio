@@ -171,6 +171,24 @@ Before writing any code, look at the final result and break it into sections:
 └─────────────────┘
 ```
 
+### Semantic HTML — Meaningful Elements
+
+`<aside>` is just a `<div>` with meaning. HTML has several elements that all create a box, but each one tells the browser what that box is *for*:
+
+| Element | What it means | When to use it |
+|---|---|---|
+| `<div>` | Generic box — no meaning | When nothing else fits |
+| `<main>` | The main content of the page | The central area |
+| `<nav>` | Navigation links | Menus, sidebars |
+| `<aside>` | Content beside the main area | Sidebars, panels |
+| `<header>` | Top of a page or section | Logo, top nav |
+| `<footer>` | Bottom of a page | Copyright, links |
+| `<section>` | A distinct section of content | Grouped content |
+
+You could replace `<aside>` with `<div>` and it would look identical. The reason we use `<aside>` is **semantic HTML** — using the right element for the right purpose. It helps screen readers, search engines, and other developers understand the layout instantly.
+
+---
+
 **The golden rule: Structure first → then style. Never the other way around.**
 
 ### Step 1 — Outer wrapper first
