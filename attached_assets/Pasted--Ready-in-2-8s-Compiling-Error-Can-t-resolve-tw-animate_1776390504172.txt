@@ -1,0 +1,88 @@
+
+ ✓ Ready in 2.8s
+ ○ Compiling / ...
+[Error: Can't resolve 'tw-animate-css' in 'D:\DevOps\portfolio\artifacts\devops-hub\app'] {
+  details: "resolve 'tw-animate-css' in 'D:\\DevOps\\portfolio\\artifacts\\devops-hub\\app'\n" +
+    '  Parsed request is a module\n' +
+    '  using description file: D:\\DevOps\\portfolio\\artifacts\\devops-hub\\package.json (relative path: ./app)\n' +
+    '    resolve as module\n' +
+    "      D:\\DevOps\\portfolio\\artifacts\\devops-hub\\app\\node_modules doesn't exist or is not a directory\n" +
+    '      looking for modules in D:\\DevOps\\portfolio\\artifacts\\devops-hub\\node_modules\n' +
+    '        single file module\n' +
+    '          using description file: D:\\DevOps\\portfolio\\artifacts\\devops-hub\\package.json (relative path: ./node_modules/tw-animate-css)\n' +
+    '            no extension\n' +
+    "              D:\\DevOps\\portfolio\\artifacts\\devops-hub\\node_modules\\tw-animate-css doesn't exist\n" +
+    '            .css\n' +
+    "              D:\\DevOps\\portfolio\\artifacts\\devops-hub\\node_modules\\tw-animate-css.css doesn't exist\n" +
+    "        D:\\DevOps\\portfolio\\artifacts\\devops-hub\\node_modules\\tw-animate-css doesn't exist\n" +
+    "      D:\\DevOps\\portfolio\\artifacts\\node_modules doesn't exist or is not a directory\n" +
+    "      D:\\DevOps\\portfolio\\node_modules doesn't exist or is not a directory\n" +
+    "      D:\\DevOps\\node_modules doesn't exist or is not a directory\n" +
+    "      D:\\node_modules doesn't exist or is not a directory"
+}
+ ⨯ ./app/globals.css:1:1
+Syntax error: tailwindcss: D:\DevOps\portfolio\artifacts\devops-hub\app\globals.css Can't resolve 'tw-animate-css' in 'D:\DevOps\portfolio\artifacts\devops-hub\app'
+
+> 1 | @import "tailwindcss";
+    | ^
+  2 | @import "tw-animate-css";
+  3 |
+<w> [webpack.cache.PackFileCacheStrategy] Skipped not serializable cache item 'Compilation/modules|D:\DevOps\portfolio\artifacts\devops-hub\node_modules\next\dist\build\webpack\loaders\css-loader\src\index.js??ruleSet[1].rules[14].oneOf[10].use[2]!D:\DevOps\portfolio\artifacts\devops-hub\node_modules\next\dist\build\webpack\loaders\postcss-loader\src\index.js??ruleSet[1].rules[14].oneOf[10].use[3]!D:\DevOps\portfolio\artifacts\devops-hub\app\globals.css': No serializer registered for PostCSSSyntaxError
+<w> while serializing webpack/lib/cache/PackFileCacheStrategy.PackContentItems -> webpack/lib/NormalModule -> webpack/lib/ModuleBuildError -> PostCSSSyntaxError
+[Error: Can't resolve 'tw-animate-css' in 'D:\DevOps\portfolio\artifacts\devops-hub\app'] {
+  details: "resolve 'tw-animate-css' in 'D:\\DevOps\\portfolio\\artifacts\\devops-hub\\app'\n" +
+    '  Parsed request is a module\n' +
+    '  using description file: D:\\DevOps\\portfolio\\artifacts\\devops-hub\\package.json (relative path: ./app)\n' +
+    '    resolve as module\n' +
+    "      D:\\DevOps\\portfolio\\artifacts\\devops-hub\\app\\node_modules doesn't exist or is not a directory\n" +
+    '      looking for modules in D:\\DevOps\\portfolio\\artifacts\\devops-hub\\node_modules\n' +
+    '        single file module\n' +
+    '          using description file: D:\\DevOps\\portfolio\\artifacts\\devops-hub\\package.json (relative path: ./node_modules/tw-animate-css)\n' +
+    '            no extension\n' +
+    "              D:\\DevOps\\portfolio\\artifacts\\devops-hub\\node_modules\\tw-animate-css doesn't exist\n" +
+    '            .css\n' +
+    "              D:\\DevOps\\portfolio\\artifacts\\devops-hub\\node_modules\\tw-animate-css.css doesn't exist\n" +
+    "        D:\\DevOps\\portfolio\\artifacts\\devops-hub\\node_modules\\tw-animate-css doesn't exist\n" +
+    "      D:\\DevOps\\portfolio\\artifacts\\node_modules doesn't exist or is not a directory\n" +
+    "      D:\\DevOps\\portfolio\\node_modules doesn't exist or is not a directory\n" +
+    "      D:\\DevOps\\node_modules doesn't exist or is not a directory\n" +
+    "      D:\\node_modules doesn't exist or is not a directory"
+}
+ ⨯ ./app/globals.css:1:1
+Syntax error: tailwindcss: D:\DevOps\portfolio\artifacts\devops-hub\app\globals.css Can't resolve 'tw-animate-css' in 'D:\DevOps\portfolio\artifacts\devops-hub\app'
+
+> 1 | @import "tailwindcss";
+    | ^
+  2 | @import "tw-animate-css";
+  3 |
+ GET / 500 in 22356ms
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
