@@ -412,3 +412,130 @@ cn(
 ```
 
 Without `cn` all of that would be one giant unreadable string concatenation.
+
+---
+
+## Sidebar — Every Class Explained
+
+### The outer `<aside>` — the sidebar container
+
+```tsx
+className={cn(
+  "border-r border-border bg-sidebar flex flex-col h-full overflow-y-auto transition-all duration-300 relative shrink-0",
+  collapsed ? "w-16" : "w-64"
+)}
+```
+
+| Class | What it does |
+|---|---|
+| `border-r` | adds a line on the RIGHT edge only (separates sidebar from content) |
+| `border-border` | uses your custom border colour from globals.css |
+| `bg-sidebar` | dark background, slightly different shade from the main page |
+| `flex` | makes this container a flexbox — its children stack vertically |
+| `flex-col` | changes direction to vertical (top to bottom) — header, then nav links, stacked |
+| `h-full` | takes up 100% of the parent height (the full screen) |
+| `overflow-y-auto` | if nav links are too many to fit, show a scrollbar |
+| `transition-all` | animate any property that changes |
+| `duration-300` | animation takes 300 milliseconds |
+| `relative` | needed so the toggle button can be positioned absolutely relative to this |
+| `shrink-0` | tells flexbox "never shrink this sidebar, keep its width fixed" |
+| `w-16` or `w-64` | 64px wide when collapsed, 256px wide when expanded |
+
+---
+
+### The header `<div>`
+
+```tsx
+className="p-4 border-b border-border sticky top-0 bg-sidebar z-10 flex items-center justify-between"
+```
+
+| Class | What it does |
+|---|---|
+| `p-4` | padding on all 4 sides (16px gap inside) |
+| `border-b` | line on the BOTTOM edge (separates header from nav links) |
+| `border-border` | your custom border colour |
+| `sticky top-0` | sticks to the top when you scroll — the logo never disappears |
+| `bg-sidebar` | same dark background (needed so sticky header covers content underneath) |
+| `z-10` | sits above other elements when overlapping |
+| `flex` | puts logo icon and text side by side |
+| `items-center` | vertically centres them in the middle |
+| `justify-between` | pushes logo to the left and toggle button to the right |
+
+---
+
+### The logo `<Link>`
+
+```tsx
+className="flex items-center gap-2 text-primary font-semibold tracking-tight hover:opacity-80 transition-opacity whitespace-nowrap overflow-hidden"
+```
+
+| Class | What it does |
+|---|---|
+| `flex items-center` | icon and text sit side by side, vertically centred |
+| `gap-2` | 8px space between icon and text |
+| `text-primary` | blue colour (your `--primary` CSS variable) |
+| `font-semibold` | slightly bold text |
+| `tracking-tight` | letters are slightly closer together |
+| `hover:opacity-80` | goes 80% opacity on hover (subtle fade effect) |
+| `transition-opacity` | fades smoothly instead of snapping |
+| `whitespace-nowrap` | stops "DevOps Hub" from wrapping to two lines |
+| `overflow-hidden` | hides any text that spills out |
+
+---
+
+### The icon box
+
+```tsx
+className="bg-primary/10 p-1.5 rounded-md shrink-0"
+```
+
+| Class | What it does |
+|---|---|
+| `bg-primary/10` | blue background at 10% opacity — very subtle tint |
+| `p-1.5` | small padding around the icon |
+| `rounded-md` | slightly rounded corners |
+| `shrink-0` | never shrink the icon box, keep it square |
+
+---
+
+### The toggle button
+
+```tsx
+className="absolute top-4 -right-3 z-20 bg-border text-muted-foreground hover:text-foreground rounded-full p-1"
+```
+
+| Class | What it does |
+|---|---|
+| `absolute` | pulled out of the normal flow, positioned relative to the `<aside>` |
+| `top-4` | 16px from the top |
+| `-right-3` | 12px OUTSIDE the right edge (negative value — floats the button on the border) |
+| `z-20` | sits above everything including the sticky header |
+| `bg-border` | uses border colour as the button background |
+| `rounded-full` | makes it a circle |
+| `p-1` | small padding so the circle is not too tight |
+
+---
+
+### Each tool `<Link>`
+
+```tsx
+className={cn(
+  "flex items-center gap-3 px-2 py-1.5 rounded-md text-sm transition-colors whitespace-nowrap overflow-hidden",
+  isActive ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:text-foreground hover:bg-accent",
+  collapsed && "justify-center"
+)}
+```
+
+| Class | What it does |
+|---|---|
+| `flex items-center` | icon and label sit side by side |
+| `gap-3` | 12px space between icon and label |
+| `px-2 py-1.5` | horizontal 8px, vertical 6px padding |
+| `rounded-md` | rounded corners on hover/active state |
+| `text-sm` | smaller font size for the nav links |
+| `transition-colors` | colour changes animate smoothly |
+| `whitespace-nowrap` | tool name never wraps to two lines |
+| `overflow-hidden` | hides overflow when sidebar is animating |
+| `bg-primary/10 text-primary` | active state: blue tinted background + blue text |
+| `hover:bg-accent` | inactive state: subtle background on hover |
+| `justify-center` | when collapsed, centres the icon horizontally |
