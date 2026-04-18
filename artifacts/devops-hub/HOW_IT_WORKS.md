@@ -310,3 +310,105 @@ body (overflow-hidden)        ← the whole page never scrolls
 ```
 
 The result: the sidebar is always fully visible no matter how long the page content is.
+
+---
+
+## Understanding `cn()` — The Class Name Helper
+
+### The problem it solves
+
+In React, you add styles via `className`. Simple cases are easy:
+```tsx
+<div className="p-4 rounded-lg bg-card">
+```
+
+But what if you want to conditionally add a class? Like "make it blue if active, grey if not"?
+
+Without `cn` you would have to write something like this:
+```tsx
+<div className={"p-4 rounded-lg " + (isActive ? "bg-primary text-white" : "bg-card text-muted-foreground")}>
+```
+
+That gets messy fast. With `cn` you write it cleanly:
+```tsx
+<div className={cn(
+  "p-4 rounded-lg",
+  isActive ? "bg-primary text-white" : "bg-card text-muted-foreground"
+)}>
+```
+
+---
+
+### What `cn` actually is — two packages working together
+
+`cn` is a tiny function that combines two packages:
+
+**Package 1 — `clsx`**
+
+Handles the logic. It takes any mix of strings, conditions, and objects and combines them into one class string:
+```ts
+clsx("p-4", true && "rounded", false && "hidden")
+// result: "p-4 rounded"
+// false conditions are ignored automatically
+```
+
+**Package 2 — `tailwind-merge`**
+
+Solves a Tailwind-specific problem. If you accidentally have two conflicting classes, Tailwind applies both but only the last one wins — which can cause unexpected results:
+```ts
+// Without tailwind-merge — both classes exist, unpredictable
+"p-2 p-4"
+
+// With tailwind-merge — keeps only the last one
+twMerge("p-2 p-4")  // → "p-4"
+```
+
+This matters when you pass extra classes into a component from outside. If a component has `p-2` by default and you pass in `p-4`, without `tailwind-merge` both would be there fighting each other.
+
+---
+
+### The `cn` function itself
+
+```ts
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+```
+
+- `...inputs` — accepts any number of arguments (the `...` means "spread" — collect everything into an array)
+- `clsx(inputs)` — processes the logic (conditions, arrays, objects) into one string
+- `twMerge(...)` — cleans up any conflicting Tailwind classes
+
+So `cn` = clsx + tailwind-merge wrapped in one convenient function.
+
+---
+
+### Real examples from the Sidebar
+
+```tsx
+// Example 1 — width switches based on collapsed state
+cn(
+  "border-r bg-sidebar flex flex-col h-full",
+  collapsed ? "w-16" : "w-64"
+)
+// if collapsed=true  → "border-r bg-sidebar flex flex-col h-full w-16"
+// if collapsed=false → "border-r bg-sidebar flex flex-col h-full w-64"
+
+// Example 2 — active link highlighting
+cn(
+  "flex items-center gap-3 px-2 py-1.5 rounded-md text-sm",
+  isActive
+    ? "bg-primary/10 text-primary font-medium"
+    : "text-muted-foreground hover:bg-accent",
+  collapsed && "justify-center"
+)
+// if isActive=true and collapsed=false:
+// → "flex items-center gap-3 px-2 py-1.5 rounded-md text-sm bg-primary/10 text-primary font-medium"
+// if isActive=false and collapsed=true:
+// → "flex items-center gap-3 px-2 py-1.5 rounded-md text-sm text-muted-foreground hover:bg-accent justify-center"
+```
+
+Without `cn` all of that would be one giant unreadable string concatenation.
