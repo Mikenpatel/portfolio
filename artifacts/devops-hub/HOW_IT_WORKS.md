@@ -539,3 +539,170 @@ className={cn(
 | `bg-primary/10 text-primary` | active state: blue tinted background + blue text |
 | `hover:bg-accent` | inactive state: subtle background on hover |
 | `justify-center` | when collapsed, centres the icon horizontally |
+
+---
+
+## Understanding the Category Rendering in the Sidebar
+
+### The scrollable nav wrapper
+
+```tsx
+<div className="flex-1 py-4 overflow-x-hidden">
+```
+
+| Class | What it does |
+|---|---|
+| `flex-1` | takes all remaining vertical space below the header |
+| `py-4` | 16px padding top and bottom |
+| `overflow-x-hidden` | hides any content peeking out sideways during the collapse animation |
+
+### Looping through categories
+
+```tsx
+{CATEGORIES.map((category) => {
+  const categoryTools = TOOLS.filter((t) => t.category === category);
+```
+
+- `CATEGORIES.map(...)` — loops through each unique category name
+- `TOOLS.filter(...)` — from the full tools list, picks only tools where `category` matches the current loop value
+- So if the loop is on `"CI/CD"`, `categoryTools` will only contain Jenkins and TeamCity
+
+### Each category group
+
+```tsx
+<div key={category} className="mb-6 px-3">
+```
+
+| Class | What it does |
+|---|---|
+| `key={category}` | not a style — React needs a unique key on every `.map()` item to track them |
+| `mb-6` | 24px gap below each category group |
+| `px-3` | 12px horizontal padding |
+
+### The category heading — shown when expanded
+
+```tsx
+<h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-2 whitespace-nowrap overflow-hidden">
+  {category}
+</h4>
+```
+
+| Class | What it does |
+|---|---|
+| `text-xs` | very small font |
+| `font-semibold` | slightly bold |
+| `text-muted-foreground` | dim grey — less prominent than tool names |
+| `uppercase` | converts text to ALL CAPS automatically (no need to type it in caps) |
+| `tracking-wider` | wider letter spacing — common style for category labels |
+| `mb-2` | 8px gap between heading and links below |
+| `px-2` | aligns with the tool links below it |
+| `whitespace-nowrap overflow-hidden` | prevents wrapping during the collapse animation |
+
+### The divider line — shown when collapsed
+
+```tsx
+<div className="h-px bg-border/50 my-4 mx-2" />
+```
+
+When collapsed there is no room for text so the heading is replaced by a thin line:
+
+| Class | What it does |
+|---|---|
+| `h-px` | exactly 1 pixel tall — a hairline |
+| `bg-border/50` | border colour at 50% opacity — very subtle |
+| `my-4` | 16px gap above and below |
+| `mx-2` | small horizontal margin so it does not touch the edges |
+
+### The condition controlling which one shows
+
+```tsx
+{!collapsed ? (
+  <h4>...</h4>     // show full heading when expanded
+) : (
+  <div />          // show divider line when collapsed
+)}
+```
+
+`!collapsed` means "if NOT collapsed" — heading shows when sidebar is wide, line shows when narrow.
+
+---
+
+## `import { TOOLS, CATEGORIES } from "@/data/tools"` — Explained
+
+This line brings the tool data into the Sidebar. It has three parts:
+
+### `import { TOOLS, CATEGORIES }`
+
+The curly braces mean you are doing a **named import** — picking specific things out of the file by their exact name.
+
+- `TOOLS` — the full array of all 9 tools with all their data
+- `CATEGORIES` — the auto-generated array of unique category names
+
+If you only needed tools you could write `import { TOOLS }` — you do not have to take everything.
+
+### `from "@/data/tools"`
+
+- `@/` — shortcut for the project root
+- `data/tools` — the file at `data/tools.ts` (no need to write `.ts`, TypeScript finds it automatically)
+
+### Why can you import it?
+
+Because in `data/tools.ts` those two things are exported:
+```ts
+export const TOOLS: Tool[] = [...]
+export const CATEGORIES = Array.from(...)
+```
+
+`export` = "make this available to other files"
+`import` = "bring it into this file"
+
+They are always a pair — you can only import something that was explicitly exported.
+
+---
+
+## `export const CATEGORIES = Array.from(new Set(TOOLS.map(t => t.category)))` — Explained
+
+This line automatically generates the categories list from the tools data. Unwrap it from the inside out:
+
+### Step 1 — `TOOLS.map(t => t.category)`
+
+Loops through every tool and grabs just the `category` field from each:
+```ts
+["Repository Management", "Repository Management", "CI/CD", "Security", "Security", "Infrastructure", "GitOps", "GitOps", "CI/CD"]
+```
+The `t` is just a shorthand variable for "each tool as we loop". You could call it `tool`, `item`, or anything — it does not matter.
+
+### Step 2 — `new Set(...)`
+
+A `Set` is a special JavaScript type that only keeps unique values — it silently drops duplicates:
+```ts
+Set { "Repository Management", "CI/CD", "Security", "Infrastructure", "GitOps" }
+```
+
+### Step 3 — `Array.from(...)`
+
+A `Set` looks like an array but is not one — you cannot use `.map()` on it directly. `Array.from()` converts it back into a proper array:
+```ts
+["Repository Management", "CI/CD", "Security", "Infrastructure", "GitOps"]
+```
+
+### Step 4 — `export const CATEGORIES =`
+
+Saves the result into a constant called `CATEGORIES` and exports it so other files can import and use it.
+
+### The full picture
+
+```
+TOOLS.map(t => t.category)   → grab all categories (with duplicates)
+new Set(...)                  → remove duplicates
+Array.from(...)               → convert back to a usable array
+export const CATEGORIES =     → save and share it
+```
+
+### What to keep in mind about categories
+
+1. **Categories come from the tools** — there is no separate list to maintain
+2. **Spelling must be exact** — `"CI/CD"` and `"ci/cd"` would create two separate groups
+3. **Adding a new category is automatic** — just add a tool with a new category value and it appears in the sidebar
+4. **Order follows the tools array** — the first category seen in the tools list appears first in the sidebar
+5. **TypeScript enforces valid values** — the `ToolCategory` type at the top of `tools.ts` will show an error immediately if you use a category name that is not in the allowed list
