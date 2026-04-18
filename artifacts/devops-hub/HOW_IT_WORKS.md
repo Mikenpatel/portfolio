@@ -272,3 +272,41 @@ bg-gray-950   ← almost black
 ```
 
 Our custom `bg-background` is roughly equivalent to `bg-gray-950` but with a slight blue tint. We gave it a semantic name (`background`) instead of a shade number so it is easier to understand what it is used for across the whole project.
+
+---
+
+## Understanding `flex`, `overflow-hidden`, and `overflow-y-auto`
+
+### `flex`
+
+Makes the element a **flexbox container**. Its children line up in a row by default (side by side). That is why the Sidebar and `<main>` sit next to each other — they are both children of `<body className="flex">`.
+
+```
+<body flex>
+  ├── <Sidebar />   ← sits on the left
+  └── <main />      ← sits on the right
+```
+
+Without `flex`, they would stack vertically (one on top of the other).
+
+### `overflow-hidden`
+
+Hides anything that spills outside the element's boundaries. On the `<body>` it prevents the entire page from getting a scrollbar. Instead, only the inner content area scrolls.
+
+Think of it like a picture frame — `overflow-hidden` clips anything that goes beyond the frame edges.
+
+### `overflow-y-auto`
+
+- `y` = vertical direction only
+- `auto` = add a scrollbar only when the content is taller than the container
+
+This is on the `<main>` element. So when a tool page has a lot of content, only that right-hand panel scrolls — the sidebar on the left stays completely fixed in place.
+
+### How they work together as a pair
+
+```
+body (overflow-hidden)        ← the whole page never scrolls
+  └── main (overflow-y-auto)  ← only this inner area scrolls
+```
+
+The result: the sidebar is always fully visible no matter how long the page content is.
