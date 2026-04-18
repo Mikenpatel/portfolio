@@ -82,6 +82,108 @@ User clicks a tool link
 
 ---
 
+## Who Passes `children` to the Layout?
+
+In `layout.tsx` the function receives `children` as a prop:
+```tsx
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+```
+
+**Next.js itself passes the children** — you never call `<RootLayout>` manually anywhere in your code.
+
+When a request comes in, Next.js internally does something like this:
+
+For the `/` route:
+```tsx
+<RootLayout>
+  <HomePage />       {/* this is your page.tsx */}
+</RootLayout>
+```
+
+For the `/tools/artifactory` route:
+```tsx
+<RootLayout>
+  <ToolPage />       {/* this is your tools/[toolId]/page.tsx */}
+</RootLayout>
+```
+
+Next.js looks at the URL, finds the matching `page.tsx` file, and automatically wraps it inside the nearest `layout.tsx` — passing that page as the `children` prop. You never write that wrapping yourself.
+
+The folder structure is the instruction:
+```
+app/
+├── layout.tsx          ← Next.js uses this as the wrapper
+├── page.tsx            ← passed as children for "/"
+└── tools/
+    └── [toolId]/
+        └── page.tsx    ← passed as children for "/tools/anything"
+```
+
+The file location tells Next.js everything. That is the whole idea behind the App Router — **your folder structure is your routing**.
+
+---
+
+## Understanding `layout.tsx` Line by Line
+
+```ts
+import type { Metadata } from "next";
+```
+Imports the `Metadata` type from Next.js. "Type" means it is only used for TypeScript checking — it tells TypeScript what shape the metadata object should have. It does not run any code.
+
+```ts
+import "./globals.css";
+```
+Loads your entire CSS file — the dark theme, CSS variables, body font. This is the only place you need to import it. Because this layout wraps every page, the styles apply everywhere automatically.
+
+```ts
+import { Sidebar } from "@/components/Sidebar";
+```
+Imports the Sidebar component. The `@/` is a shortcut that means "start from the project root" — equivalent to `../../components/Sidebar`. Next.js sets this up automatically.
+
+```ts
+export const metadata: Metadata = {
+  title: "DevOps Tools Hub",
+  description: "Internal reference portal for DevOps infrastructure tools",
+};
+```
+Sets the browser tab title and the description search engines see. Next.js reads this and puts it in the `<head>` of the page — you never write `<title>` tags manually.
+
+```tsx
+<html lang="en">
+```
+The root HTML tag. `lang="en"` tells browsers and screen readers the page is in English.
+
+```tsx
+<body className="bg-background text-foreground h-screen flex overflow-hidden">
+```
+Four Tailwind classes on the body:
+- `bg-background` — dark navy background from your CSS variable
+- `text-foreground` — light text colour
+- `h-screen` — body takes up exactly the full screen height
+- `flex` — sidebar and main content sit side by side
+- `overflow-hidden` — stops the whole page from scrolling (only the main content area scrolls)
+
+```tsx
+<Sidebar />
+```
+Renders the sidebar. It sits on the left because of the `flex` on the body above.
+
+```tsx
+<main className="flex-1 overflow-y-auto">
+  {children}
+</main>
+```
+The right-hand content area:
+- `flex-1` — takes up all remaining space after the sidebar
+- `overflow-y-auto` — this area scrolls vertically when content is long
+- `{children}` — this is where `page.tsx` or `tools/[toolId]/page.tsx` renders
+
+---
+
 ## Understanding `bg-background` — Where Does It Come From?
 
 In `layout.tsx` you see:
