@@ -706,3 +706,173 @@ export const CATEGORIES =     → save and share it
 3. **Adding a new category is automatic** — just add a tool with a new category value and it appears in the sidebar
 4. **Order follows the tools array** — the first category seen in the tools list appears first in the sidebar
 5. **TypeScript enforces valid values** — the `ToolCategory` type at the top of `tools.ts` will show an error immediately if you use a category name that is not in the allowed list
+
+---
+
+## `usePathname()` — Knowing Which Page You Are On
+
+```ts
+const pathname = usePathname();
+```
+
+`usePathname()` is a Next.js hook that tells you the **current URL path** in the browser.
+
+If the user is on the Artifactory page, `pathname` equals:
+```
+"/tools/artifactory"
+```
+
+If they are on the home page:
+```
+"/"
+```
+
+### Why the Sidebar needs it
+
+The sidebar uses `pathname` to know which tool link to highlight as active:
+```ts
+const isActive = pathname === `/tools/${tool.id}`;
+```
+
+This compares the current URL against each tool's link. If they match, `isActive` is `true` and the link gets the blue highlight styling. Without `usePathname`, the sidebar would have no idea where the user currently is — every link would look the same with no active state.
+
+### Why it needs `"use client"`
+
+`usePathname()` reads from the browser's address bar — that only exists in the browser, not on the server. That is one of the reasons the Sidebar has `"use client"` at the top. Without it, `usePathname` would throw an error.
+
+---
+
+## Props — The Full Concept
+
+**Props** (short for "properties") are how you pass information **into** a component.
+
+Think of a component like a function and props like its arguments:
+
+```tsx
+function Greeting({ name }) {
+  return <h1>Hello {name}</h1>
+}
+
+<Greeting name="Ahmed" />  // renders: Hello Ahmed
+<Greeting name="Sara" />   // renders: Hello Sara
+```
+
+The component stays the same. The data changes based on what you pass in.
+
+### Props as an object
+
+When React calls your component, it collects everything you passed and bundles it into one object:
+
+```tsx
+// You write this:
+<Greeting name="Ahmed" age={30} />
+
+// React sees this internally:
+{ name: "Ahmed", age: 30 }
+```
+
+That object is the props. You can destructure it (pick out specific values) in the function signature:
+
+```tsx
+function Greeting({ name, age }) {
+  return <h1>Hello {name}, you are {age}</h1>
+}
+```
+
+### The spread operator `{...props}`
+
+If you have an object:
+```ts
+const props = { className: "w-4 h-4", color: "blue" }
+```
+
+Instead of passing each property one by one:
+```tsx
+<SiJenkins className={props.className} color={props.color} />
+```
+
+You can spread the whole object at once:
+```tsx
+<SiJenkins {...props} />
+```
+
+They do exactly the same thing. `{...props}` says "unpack everything in this object and pass it all as individual props".
+
+---
+
+## `getIconForTool` — Full Explanation
+
+```ts
+export const getIconForTool = (iconName: string, className?: string) => {
+  const props = { className: cn("w-4 h-4", className) };
+  switch (iconName) {
+    case "SiJfrog":     return <SiJfrog {...props} />;
+    case "SiBitbucket": return <SiBitbucket {...props} />;
+    case "SiJenkins":   return <SiJenkins {...props} />;
+    case "SiArgo":      return <SiArgo {...props} />;
+    case "SiJetbrains": return <SiJetbrains {...props} />;
+    case "SiShield":    return <SiShield {...props} />;
+    case "SiServerless":return <SiServerless {...props} />;
+    case "SiNexus":     return <SiJfrog {...props} />;
+    default:            return <Layers {...props} />;
+  }
+};
+```
+
+### The function signature
+- `iconName: string` — a string like `"SiJenkins"` that comes from each tool in `data/tools.ts`
+- `className?: string` — optional extra CSS classes you can pass in (the `?` means not required)
+- `export` — makes it available to other files like the tool detail page
+
+### Building the props
+```ts
+const props = { className: cn("w-4 h-4", className) };
+```
+Creates one object with one property — `className`. Uses `cn()` to combine the default size with any extra classes. All 8 icons share this same `props` object — that is why every icon is the same size by default.
+
+### The switch statement
+- Checks the `iconName` string against each case
+- When it finds a match, returns the actual icon component
+- `{...props}` passes the className into the icon
+- `default` — if no case matches, returns a generic `<Layers />` icon as fallback
+
+### Why this pattern?
+The icon name is stored as a plain string in `data/tools.ts`:
+```ts
+{ id: "jenkins", iconName: "SiJenkins", ... }
+```
+You cannot do `<"SiJenkins" />` — JSX needs the actual component, not a string. This function is the bridge that converts the string into the real component.
+
+### The `SiNexus` special case
+```ts
+case "SiNexus": return <SiJfrog {...props} />;
+```
+NexusIQ does not have its own icon in react-icons, so it falls back to the JFrog icon as the closest match.
+
+---
+
+## Why `cn("w-4 h-4", className)` Has No Condition
+
+You might expect a condition here since `cn()` is usually used with true/false logic. But `className` is an **optional parameter** — it is either a string or `undefined`.
+
+`cn()` (via clsx) silently ignores any falsy value like `undefined`:
+```ts
+cn("w-4 h-4", undefined)       // → "w-4 h-4"
+cn("w-4 h-4", "text-blue-500") // → "w-4 h-4 text-blue-500"
+```
+
+So when nothing is passed, `cn()` returns just `"w-4 h-4"` and ignores the `undefined` quietly. No condition needed — the optional parameter handles it naturally.
+
+### Where a larger className gets passed in
+
+On the tool detail page, the icon is shown bigger:
+```tsx
+{getIconForTool(tool.iconName, "w-6 h-6")}
+```
+Result: `cn("w-4 h-4", "w-6 h-6")` → `tailwind-merge` resolves the conflict and keeps `"w-6 h-6"`.
+
+In the sidebar, nothing is passed:
+```tsx
+{getIconForTool(tool.iconName)}
+```
+Result: `cn("w-4 h-4", undefined)` → just `"w-4 h-4"`.
