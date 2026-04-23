@@ -14,6 +14,42 @@ export interface Instance {
   status: ToolStatus;
 }
 
+export interface Availability {
+  uptime: string;
+  last30Days: string;
+  lastIncident: string;
+  sla: string;
+}
+
+export interface RepositoryStats {
+  local: number;
+  remote: number;
+  virtual: number;
+  byType: { type: string; count: number }[];
+}
+
+export interface Performance {
+  avgResponseTime: string;
+  p99ResponseTime: string;
+  throughput: string;
+  cacheHitRatio: string;
+}
+
+export interface UsageStats {
+  storageUsed: string;
+  storageTotal: string;
+  storagePercent: number;
+  activeUsers: number;
+  downloadsThisMonth: number;
+  uploadsThisMonth: number;
+}
+
+export interface ServiceCatalogItem {
+  name: string;
+  description: string;
+  url: string;
+}
+
 export interface Tool {
   id: string;
   name: string;
@@ -30,6 +66,11 @@ export interface Tool {
     trend?: "up" | "down" | "neutral";
   }[];
   lastUpdated: string;
+  availability?: Availability;
+  repositories?: RepositoryStats;
+  performance?: Performance;
+  usage?: UsageStats;
+  serviceCatalog?: ServiceCatalogItem[];
 }
 
 export const TOOLS: Tool[] = [
@@ -90,7 +131,62 @@ helm repo update`,
     metrics: [
       { label: "RITMs this quarter", count: 47, trend: "up" }
     ],
-    lastUpdated: "April 15, 2026"
+    lastUpdated: "April 15, 2026",
+    availability: {
+      uptime: "99.97%",
+      last30Days: "99.98%",
+      lastIncident: "March 12, 2026",
+      sla: "99.9%"
+    },
+    repositories: {
+      local: 45,
+      remote: 28,
+      virtual: 12,
+      byType: [
+        { type: "Maven", count: 22 },
+        { type: "npm", count: 18 },
+        { type: "Docker", count: 15 },
+        { type: "PyPI", count: 10 },
+        { type: "Helm", count: 8 },
+        { type: "Other", count: 12 }
+      ]
+    },
+    performance: {
+      avgResponseTime: "142ms",
+      p99ResponseTime: "380ms",
+      throughput: "1.2k req/min",
+      cacheHitRatio: "94%"
+    },
+    usage: {
+      storageUsed: "4.2 TB",
+      storageTotal: "10 TB",
+      storagePercent: 42,
+      activeUsers: 847,
+      downloadsThisMonth: 142000,
+      uploadsThisMonth: 8900
+    },
+    serviceCatalog: [
+      {
+        name: "Request Repository Access",
+        description: "Get read/write access to an existing Artifactory repository.",
+        url: "https://servicenow.company.com/catalog?item=artifactory-access"
+      },
+      {
+        name: "Create New Repository",
+        description: "Request creation of a new local, remote, or virtual repository.",
+        url: "https://servicenow.company.com/catalog?item=artifactory-new-repo"
+      },
+      {
+        name: "Request Cleanup Policy",
+        description: "Set up an automated cleanup policy for old or unused artifacts.",
+        url: "https://servicenow.company.com/catalog?item=artifactory-cleanup"
+      },
+      {
+        name: "Onboard a New Package Type",
+        description: "Request support for a new package type in Artifactory.",
+        url: "https://servicenow.company.com/catalog?item=artifactory-package"
+      }
+    ]
   },
   {
     id: "bitbucket",
